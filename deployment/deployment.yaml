@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: purchaseswebservice
+  labels:
+    example: purchaseswebservice
+  annotations:
+    auth.istio.io/8017: NONE
+spec:
+  ports:
+    - name: http
+      port: 8017
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: purchaseswebservice
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - image: josecervera/imagemapper:latest
+          imagePullPolicy: Always
+          name: imagemapper
+          ports:
+            - name: http
+              containerPort: 8017
